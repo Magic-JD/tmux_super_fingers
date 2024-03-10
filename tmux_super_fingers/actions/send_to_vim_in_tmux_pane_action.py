@@ -23,9 +23,11 @@ class SendToVimInTmuxPaneAction(Action):
                 f'Escape ":e {self._vim_e_args()}" Enter zz'
             )
         else:
-            self.cli_adapter.new_tmux_window(
-                os.environ['EDITOR'],
-                f" '{os.environ['EDITOR']} {self._vim_e_args()}; {os.environ['SHELL']} -i'"
+            editor_pane = self.cli_adapter.current_tmux_window_panes_props()[0]
+            self.cli_adapter.select_tmux_window(editor_pane.pane_id)
+            self.cli_adapter.tmux_send_keys(
+                editor_pane.pane_id,
+                f" 'vi {self._vim_e_args()}'"
             )
 
     def _vim_e_args(self) -> str:
