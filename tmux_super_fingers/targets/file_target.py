@@ -7,6 +7,7 @@ from .target_payload import OsOpenable
 from .target_payload import EditorOpenable
 from ..actions.action import Action
 from ..actions.send_to_vim_in_tmux_pane_action import SendToVimInTmuxPaneAction
+from ..actions.send_file_path_to_session import SendFilePathToSession
 from ..actions.os_open_action import OsOpenAction
 from ..actions.copy_to_clipboard_action import CopyToClipboardAction
 from .target import Target
@@ -40,8 +41,10 @@ class FileTarget(Target):
 
     @property
     def default_primary_action(self) -> Type[Action]:
-        if self.content_type == ContentType.TEXT and re.search('^n?vim', os.environ['EDITOR']):
+        if self.content_type == ContentType.TEXT and re.search('vi', os.environ['EDITOR']):
             return SendToVimInTmuxPaneAction
+        if self.content_type == ContentType.DATA:
+            return SendFilePathToSession
         else:
             return OsOpenAction
 
